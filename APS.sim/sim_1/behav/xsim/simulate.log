@@ -1,0 +1,13 @@
+Vivado Simulator 2019.2
+Time resolution is 1 ps
+
+
+===========================
+
+Press button 'Run All' (F3)
+
+===========================
+
+
+$stop called at time : 0 fs : File "E:/vivadoProjects/APS/tb_irq.sv" Line 31
+$finish called at time : 726 ns : File "E:/vivadoProjects/APS/tb_irq.sv" Line 50

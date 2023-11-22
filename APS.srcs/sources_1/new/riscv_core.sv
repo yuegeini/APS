@@ -25,7 +25,7 @@ module riscv_core(
     //common
     input   logic          clk_i,
     input   logic          rst_i,
-//    input   logic          stall_i,
+    input   logic          stall_i,
     
     //memory
     input   logic  [31:0]  instr_i,//
@@ -135,7 +135,7 @@ always @(posedge clk_i)
 begin
     //reset????????
     if(rst_i) instr_addr_o <= 0;
-    else case(jalr)//if(!stall_i) 
+    else if(!stall_i) case(jalr)
     1'b0: instr_addr_o <= ((jalr)? RD1 : (instr_addr_o + ((jal || (flag && branch))? ((branch)? imm_B : imm_J ): 4)));
     1'b1: instr_addr_o <=  RD1;
     endcase
