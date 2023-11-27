@@ -25,15 +25,18 @@ module decoder_riscv (
   output logic [1:0]   a_sel_o,
   output logic [2:0]   b_sel_o,
   output logic [4:0]   alu_op_o,
+  output logic [2:0]   csr_op_o,
+  output logic         csr_we_o,
   output logic         mem_req_o,
   output logic         mem_we_o,
   output logic [2:0]   mem_size_o,
   output logic         gpr_we_a_o,
-  output logic         wb_src_sel_o,        //write back selector
+  output logic [1:0]   wb_src_sel_o,        //write back selector
   output logic         illegal_instr_o,
   output logic         branch_o,
   output logic         jal_o,
-  output logic         jalr_o
+  output logic         jalr_o,
+  output logic         mret_o
 );
 import riscv_pkg::*;                          
 import alu_opcodes_pkg::*;
@@ -64,6 +67,9 @@ always_comb begin
         jal_o    <= 0;
         jalr_o    <= 0;  
         
+        csr_op_o <= 0;
+        csr_we_o <= 0;
+        mret_o <= 0;
     if(opcode[1:0] != 2'b11) begin
         illegal_instr_o <= 1;  
         
@@ -171,7 +177,7 @@ always_comb begin
                                 alu_op_o <= ALU_SLL;
                         end
                         3'b101: begin 
-                                if(func7 != 7'h0 || func7 != 7'h20) begin illegal_instr_o <= 1;
+                                if(func7 != 7'h00 && func7 != 7'h20) begin illegal_instr_o <= 1;
                                 gpr_we_a_o <= 0;
                                 end
                                 if(func7 == 7'h0) alu_op_o <= ALU_SRL;
@@ -407,9 +413,9 @@ always_comb begin
         //3 op
         // nop
         SYSTEM_OPCODE: begin
-                    b_sel_o <= OP_B_IMM_U; // 
-                    a_sel_o <= OP_A_ZERO;
-                    alu_op_o <= ALU_ADD;
+//                    b_sel_o <= OP_B_IMM_I; // 
+//                    a_sel_o <= OP_A_ZERO;
+//                    alu_op_o <= ALU_ADD;
                     // Reg memory op
 //                    gpr_we_a_o <= 0; // write rd
 //                    wb_src_sel_o <= 0; // from ALU
@@ -422,17 +428,31 @@ always_comb begin
 //                    mem_req_o <= 0;
 //                    mem_we_o <= 0;
 //                    mem_size_o <= 3'bxxx;
-                    if(fetched_instr_i[19:7] != 0 || fetched_instr_i [31:20] != 0 && fetched_instr_i[31:20] != 1) begin illegal_instr_o <= 1;
-                        
+
+                    if(fetched_instr_i[19:7] == 0   && (fetched_instr_i [31:20] == 0 
+                                                    || fetched_instr_i[31:20] == 1)) illegal_instr_o <= 1;
+                    else if (func7 == 7'b0011000    && fetched_instr_i [24:20] == 5'b00010 
+                                                    && fetched_instr_i[19:7] == 0) mret_o <= 1; // jalr = 2'b10; 
+                    else if(func3 == 3'b000 || func3 == 3'b100) illegal_instr_o <= 1;
+                    else begin
+                        wb_src_sel_o <= 2;
+                        csr_op_o <= func3;
+                        csr_we_o <= 1;
+                        a_sel_o <= OP_A_RS1;
+                        b_sel_o <= OP_B_IMM_U;
+                        gpr_we_a_o <= 1;
+//                        case(func3)
+//                            CSRRW:
                     end
+                    
             end
             //SYSTEM, MISC_MEM instructions
         //3 op
         // nop
         MISC_MEM_OPCODE: begin
-                    b_sel_o <= OP_B_IMM_U; // 
-                    a_sel_o <= OP_A_ZERO;
-                    alu_op_o <= ALU_ADD;
+//                    b_sel_o <= OP_B_IMM_I; // 
+//                    a_sel_o <= OP_A_ZERO;
+//                    alu_op_o <= ALU_ADD;
                     // Reg memory op
 //                    gpr_we_a_o <= 0; // write rd
 //                    wb_src_sel_o <= 0; // from ALU

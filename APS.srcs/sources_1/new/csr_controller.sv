@@ -88,19 +88,19 @@ always_comb begin
     endcase
 end
 
-always_ff @(posedge clk_i, posedge rst_i) begin
+always_ff @(posedge clk_i) begin
     if(rst_i) begin
-         if(mie_en)             mie_instr_o <= 32'b0;
-         if(mtvec_en)           mtvec_instr_o <= 32'b0;
-         if(mscratch_en)        mscratch_instr_o <= 32'b0;
-         if(mepc_en || trap_i)  mepc_instr_o <= 32'b0;
-         if(mcause_en || trap_i) mcause_instr_o <= 32'b0;
+         mie_instr_o <= 32'b0;
+         mtvec_instr_o <= 32'b0;
+         mscratch_instr_o <= 32'b0;
+         mepc_instr_o <= 32'b0;
+          mcause_instr_o <= 32'b0;
     end else begin
-        mie_instr_o <= sys_instr;
-        mtvec_instr_o <= sys_instr;
-        mscratch_instr_o <= sys_instr;
-        mepc_instr_o <= trap_i == 1 ? pc_i : sys_instr;
-        mcause_instr_o <= trap_i == 1 ? mcause_i : sys_instr;
+        if(mie_en)             mie_instr_o <= sys_instr;
+        if(mtvec_en)           mtvec_instr_o <= sys_instr;
+        if(mscratch_en)        mscratch_instr_o <= sys_instr;
+        if(mepc_en || trap_i)  mepc_instr_o <= trap_i == 1 ? pc_i : sys_instr;
+        if(mcause_en || trap_i)mcause_instr_o <= trap_i == 1 ? mcause_i : sys_instr;
     end
 end
 

@@ -39,7 +39,7 @@ always_comb begin
     
     irq_o <= irq_req_i & mie_i & ~(exch_set | irqh_o);
     irq_ret_o <= mret_i & (~exch_set); 
-                   
+
     irqh_set <= irq_o  | irqh_o;                      
     irqh_reset <= ~irq_ret_o & irqh_set;    
               

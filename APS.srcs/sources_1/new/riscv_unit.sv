@@ -28,7 +28,7 @@ module riscv_unit(
 logic stall, mem_we, mem_req;
 logic [31:0] instr, RD, instr_addr, data_addr, mem_wd;
 logic [3:0] mem_size;
-
+logic irq_ret, irq_req; 
  
 //CORE
 riscv_core CORE (
@@ -43,7 +43,10 @@ riscv_core CORE (
     .mem_we_o       (mem_we     ),
     .mem_req_o      (mem_req    ),
     .mem_size_o     (mem_size   ),
-    .mem_wd_o       (mem_wd     )
+    .mem_wd_o       (mem_wd     ),
+    
+    .irq_req_i      (irq_req), 
+    .irq_ret_o      (irq_ret)  
 );
 //INSTRUCTION MEMORY
 instr_mem instruction(

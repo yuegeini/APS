@@ -1,6 +1,7 @@
 # compile verilog/system verilog design source files
 sv xil_defaultlib  \
 "../../../../APS.srcs/sources_1/new/alu_opcodes_pkg.sv" \
+"../../../../csr_pkg.sv" \
 "../../../../riscv_pkg.sv" \
 "../../../../APS.srcs/sources_1/new/decoder_riscv.sv" \
 "../../../../tb_decoder_riscv.sv" \
