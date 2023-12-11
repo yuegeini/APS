@@ -28,7 +28,7 @@ module instr_mem(
     
 logic [7:0] ROM [0:1023];
 
-initial $readmemh("program.txt", ROM);
+initial $readmemh("lab_12_sw_led_instr.mem", ROM);
 
 always_comb begin
     if(addr_i < 1021) 

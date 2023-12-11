@@ -16,7 +16,7 @@ module tb_irq_unit();
 
     riscv_unit unit(
     .clk_i(clk),
-    .rst_i(rst)
+    .resetn_i(rst)
     );
 
     initial begin

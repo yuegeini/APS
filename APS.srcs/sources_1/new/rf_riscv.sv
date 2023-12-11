@@ -10,11 +10,14 @@ module rf_riscv(
     );
        
 logic [31:0] rf_mem [31:0];
+assign rf_mem[0] = 32'b0;
+assign read_data1_o = rf_mem[read_addr1_i];
+assign read_data2_o = rf_mem[read_addr2_i];
 
-always_comb begin
-    read_data1_o <= (read_addr1_i == 0) ? 0 : rf_mem[read_addr1_i];
-    read_data2_o <= (read_addr2_i == 0) ? 0 : rf_mem[read_addr2_i];
-end
+//always_comb begin
+//    read_data1_o <= (read_addr1_i == 0) ? 0 : rf_mem[read_addr1_i];
+//    read_data2_o <= (read_addr2_i == 0) ? 0 : rf_mem[read_addr2_i];
+//end
 
 always_ff @(posedge clk_i) begin
     if (write_enable_i) begin

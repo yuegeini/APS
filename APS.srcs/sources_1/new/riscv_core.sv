@@ -52,7 +52,7 @@ logic [1:0] src_a; //
 logic [2:0] src_b, mem_size, csr_op;//
 
 logic mret, trap, csr_we, irq;
-logic [31:0] PC, csr_wd, mie, mepc, mtvecm, mcause;
+logic [31:0] PC, csr_wd, mie, mepc, mtvec, mcause;
 
 //MAIN DECODER
 decoder_riscv main_decoder(

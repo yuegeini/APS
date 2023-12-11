@@ -24,42 +24,43 @@ module data_mem(
     input   logic           clk_i,
     input   logic           mem_req_i,
     input   logic           write_enable_i,
+    input   logic [ 3:0]    byte_enable_i,
     input   logic [31:0]    addr_i,
     input   logic [31:0]    write_data_i,
-    output  logic [31:0]    read_data_oi 
+    output  logic [31:0]    read_data_o 
     );
 //    assign read_data_oi = 0;
-logic [7:0] ROM [0:1023];
-always_ff @(posedge clk_i) begin
-    if(mem_req_i == 0 || write_enable_i == 1) begin 
-            read_data_oi <= 32'hfa11_1eaf;
-    end
-    else if(mem_req_i) begin 
-        if (addr_i < 1021)
-            read_data_oi <= {ROM[addr_i + 3], ROM[addr_i + 2], ROM[addr_i + 1], ROM[addr_i]};
-        else if(addr_i < 1024)
-//            read_data_oi <= {{((addr_i - 4092) * 2){4'bx}}, ROM[4095 : addr_i]};
-            case(addr_i)
-                1021: read_data_oi <= {{2{4'bx}}, ROM[addr_i + 2], ROM[addr_i + 1], ROM[addr_i]};
-                1022: read_data_oi <= {{4{4'bx}}, ROM[addr_i + 1], ROM[addr_i]};
-                1023: read_data_oi <= {{6{4'bx}}, ROM[addr_i]};
-            endcase
-        else read_data_oi <= 32'hdead_beef; 
-    end
-//    else     read_data_oi <= 32'hx;
+import riscv_pkg::*;
+logic [31:0] PRISHED [0:16384];
 
-end
-always_ff @(posedge clk_i) begin
-    if(mem_req_i && write_enable_i) begin
-        if(addr_i < 1021) begin
-            ROM[addr_i] <= write_data_i[7:0];
-            ROM[addr_i + 1] <= write_data_i[15:8];
-            ROM[addr_i + 2] <= write_data_i[23:16];
-            ROM[addr_i + 3] <= write_data_i[31:24];
-        end
+always_ff @(posedge clk_i)begin
+    if(mem_req_i == 0 || write_enable_i == 1)begin
+        read_data_o <= 32'hfa11_1eaf;
+    end else
+    if(mem_req_i == 1 && addr_i<16384) begin
+        read_data_o <= PRISHED[addr_i >> 2];
+    end else
+    if(mem_req_i == 1 && addr_i > 16384) begin
+        read_data_o <= 32'hdead_beef;
     end
 end
 
+always_ff@(posedge clk_i) begin
+    if(mem_req_i == 1 && write_enable_i == 1)begin
+    if(byte_enable_i[0])begin
+        PRISHED[addr_i >> 2][7:0] <= write_data_i[7:0];
+    end
+    if(byte_enable_i[1])begin
+        PRISHED[addr_i >> 2][15:8] <= write_data_i[15:8];
+    end
+    if(byte_enable_i[2])begin
+        PRISHED[addr_i >> 2][23:16] <= write_data_i[23:16];
+    end
+    if(byte_enable_i[3])begin
+        PRISHED[addr_i >> 2][31:24] <= write_data_i[31:24];
+    end
+    end
+end
 endmodule
 
 

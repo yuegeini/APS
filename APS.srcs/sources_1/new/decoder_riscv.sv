@@ -284,6 +284,7 @@ always_comb begin
         BRANCH_OPCODE: begin
         
                     branch_o <= 1;
+//                    mem_size_o <= 3'b010;
                     case(func3)
                         3'b000: alu_op_o <= ALU_EQ;
                         3'b001: alu_op_o <= ALU_NE;
@@ -294,6 +295,7 @@ always_comb begin
                         default: begin  
                             illegal_instr_o <= 1;
                             branch_o <= 0;
+//                            mem_size_o <= 3'b000;
                         end
                     endcase
                     b_sel_o <= OP_B_RS2;
@@ -308,7 +310,6 @@ always_comb begin
 //                    // memory op
 //                    mem_req_o <= 0;
 //                    mem_we_o <= 0;
-//                    mem_size_o <= 3'bxxx;
 //                    if(illegal_instr_o == 1) branch_o <= 0;
             end
         ////////////////////////////////////////////////////////////////////
