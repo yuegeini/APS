@@ -27,16 +27,16 @@ module riscv_unit(
   // Входы и выходы периферии
   input  logic [15:0] sw_i,       // Переключатели
 
-  output logic [15:0] led_o,      // Светодиоды
+  output logic [15:0] led_o      // Светодиоды
 
-  input  logic        kclk_i,     // Тактирующий сигнал клавиатуры
-  input  logic        kdata_i,    // Сигнал данных клавиатуры
+//  input  logic        kclk_i,     // Тактирующий сигнал клавиатуры
+//  input  logic        kdata_i,    // Сигнал данных клавиатуры
 
-  output logic [ 6:0] hex_led_o,  // Вывод семисегментных индикаторов
-  output logic [ 7:0] hex_sel_o,  // Селектор семисегментных индикаторов
+  //output logic [ 6:0] hex_led_o,  // Вывод семисегментных индикаторов
+  //output logic [ 7:0] hex_sel_o,  // Селектор семисегментных индикаторов
 
-  input  logic        rx_i,       // Линия приема по UART
-  output logic        tx_o       // Линия передачи по UART
+//  input  logic        rx_i,       // Линия приема по UART
+//  output logic        tx_o       // Линия передачи по UART
 
 //  output logic [3:0]  vga_r_o,    // красный канал vga
 //  output logic [3:0]  vga_g_o,    // зеленый канал vga
@@ -60,8 +60,11 @@ logic [31:0] data_RD, hex_RD, sw_RD;
 logic [255:0] out;
 
 always_comb begin
-    out <= 256'd0;
-    out[multi_addr] <= 1'b1;
+    out <= 0;
+    if(req)
+        out[multi_addr] <= 1'b1;
+    
+        
 end
 
 assign multi_addr = lsu_addr[31:24];
@@ -121,7 +124,7 @@ data_mem data(
         .write_enable_i     (mem_we     ),
         .byte_enable_i      (lsu_be     ),
         .addr_i             (addr       ),
-        .write_data_i       (mem_wd     ),
+        .write_data_i       (lsu_wd     ),
         .read_data_o        (data_RD    )
 );
 ////HEX
@@ -167,6 +170,7 @@ always_comb  begin
         8'd0: lsu_rd <= data_RD;
         8'd1: lsu_rd <= sw_RD;
         8'd2: lsu_rd <= hex_RD;
+        default: lsu_rd <= data_RD;
     endcase
 end
 

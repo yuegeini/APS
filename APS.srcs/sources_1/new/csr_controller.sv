@@ -56,7 +56,7 @@ always_comb begin
         3'b101: sys_instr <= imm_data_i;
         3'b110: sys_instr <= imm_data_i | read_data_o;
         3'b111: sys_instr <= ~imm_data_i & read_data_o;
-//        default: sys_instr <= 32'bx;
+        default: sys_instr <= rs1_data_i;
     endcase
 end
 
@@ -85,6 +85,7 @@ always_comb begin
         MSCRATCH_ADDR:  read_data_o <= mscratch_instr_o;
         MEPC_ADDR:      read_data_o <= mepc_instr_o;
         MCAUSE_ADDR:    read_data_o <= mcause_instr_o;
+        default:         read_data_o <= mie_instr_o;
     endcase
 end
 

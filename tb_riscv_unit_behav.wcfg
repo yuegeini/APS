@@ -14,15 +14,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="226120000fs"></ZoomStartTime>
-      <ZoomEndTime time="227832001fs"></ZoomEndTime>
-      <Cursor1Time time="226815000fs"></Cursor1Time>
+      <ZoomStartTime time="5998580000fs"></ZoomStartTime>
+      <ZoomEndTime time="6000284001fs"></ZoomEndTime>
+      <Cursor1Time time="6000000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="184"></NameColumnWidth>
-      <ValueColumnWidth column_width="110"></ValueColumnWidth>
+      <ValueColumnWidth column_width="105"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="85" />
+   <WVObjectSize size="86" />
    <wvobject fp_name="/tb_riscv_unit/dut/SW/clk_i" type="logic">
       <obj_property name="ElementShortName">clk_i</obj_property>
       <obj_property name="ObjectShortName">clk_i</obj_property>
@@ -114,6 +114,10 @@
    <wvobject fp_name="/tb_riscv_unit/dut/LED/counter" type="array">
       <obj_property name="ElementShortName">counter[31:0]</obj_property>
       <obj_property name="ObjectShortName">counter[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_riscv_unit/dut/multi_addr" type="array">
+      <obj_property name="ElementShortName">multi_addr[7:0]</obj_property>
+      <obj_property name="ObjectShortName">multi_addr[7:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_riscv_unit/dut/LSU/core_addr_i" type="array">
       <obj_property name="ElementShortName">core_addr_i[31:0]</obj_property>

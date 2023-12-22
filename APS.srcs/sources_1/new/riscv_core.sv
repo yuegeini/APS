@@ -52,7 +52,7 @@ logic [1:0] src_a; //
 logic [2:0] src_b, mem_size, csr_op;//
 
 logic mret, trap, csr_we, irq;
-logic [31:0] PC, csr_wd, mie, mepc, mtvec, mcause;
+logic [31:0] PC, csr_wd, mie, mepc, mtvec, mcause, irq_cause;
 
 //MAIN DECODER
 decoder_riscv main_decoder(
@@ -129,11 +129,11 @@ interrupt_controller IRQ (
 
 //PC  
 
-initial
-begin
-    PC <= instr_i;
-    //enpc = 1;
-end
+//initial
+//begin
+//    PC <= instr_i;
+//    //enpc = 1;
+//end
 
 // Sign Extentions:
 assign imm_U = {instr_i[31:12], 12'b0};
@@ -169,6 +169,7 @@ begin
       2'b00: A <= RD1;
       2'b01: A <= instr_addr_o;
       2'b10: A <= 0;
+      default: A <= RD1;
     endcase
     
     case(src_b)
@@ -177,11 +178,13 @@ begin
       3'b010: B <= imm_U;
       3'b011: B <= imm_S;
       3'b100: B <= 4;
+      default: B <= RD2;
       endcase
       case(ws)
         2'b00: WD <= alu_result;
         2'b01: WD <= mem_rd_i;
         2'b10: WD <= csr_wd;
+        default: WD <= alu_result;
       endcase
 end
 logic [31:0] add_pc, new_pc, new_pc_trap, new_pc_mret;
@@ -191,7 +194,7 @@ always_comb begin
     new_pc_trap <= trap ? mtvec : new_pc;
     new_pc_mret <= mret ? mepc : new_pc_trap;
 end
-always @(posedge clk_i)
+always_ff @(posedge clk_i)
 begin
     //reset????????
     if(rst_i) PC <= 0;
